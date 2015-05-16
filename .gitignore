@@ -27,3 +27,4 @@ DerivedData
 
 #Backend ignores
 database.yml
+.*.sw*
