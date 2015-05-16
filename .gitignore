@@ -25,4 +25,5 @@ DerivedData
 #
 #Pods/
 
-config/
+#Backend ignores
+database.yml
