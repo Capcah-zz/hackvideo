@@ -70,11 +70,20 @@
           '>'+
           '<a onclick=\'document.getElementById(&quot;overlay&quot;).style.visibility = &quot;hidden&quot; \'>close</a>'+
           '<div style="overflow-y: scroll; width: 90%; height: 300px; border:1px solid #000;">'+
+          '<form action="#">'+
           '<ul>'+
           '</ul>'+
+          '</form>'+
           '</div>'+
+          '<button type="button" id="watch2"> Watch together </button>'+
           '</div>'+
           '</div>'
+        );
+
+        document.querySelectorAll("#watch2")[0].addEventListener('click',
+          function(){
+            console.log("hello!");
+          }
         );
 
         console.debug("ul_friends");
@@ -99,8 +108,11 @@
 
               ul_el.insertAdjacentHTML('beforeend',
                 '<li>'+
+                '<label>'+
+                '<input type="checkbox" value="'+e+'">'+
                 '<img src="//graph.facebook.com/'+e+'/picture?type=square">'+
                 e+
+                '</label>'+
                 '</li>')
             });
 
