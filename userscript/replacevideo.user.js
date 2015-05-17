@@ -142,8 +142,39 @@
             document.querySelectorAll("#overlay")[0].style.visibility = "visible";
 
             // Helper function to get elements
+
+          }); }
+
+      var player_el = document.createElement('script');
+      player_el.setAttribute("type","text/javascript");
+      player_el.innerHTML =
+        "fbhack = {};\n"+
+        "fbhack.load_player_js = function(){\n"+
+          "console.debug('fbhack.load_player_js')\n"+
+          "var player_el = document.createElement('script');\n"+
+          "player_el.setAttribute(\"type\",\"text/javascript\");\n"+
+          "player_el.setAttribute(\"src\", \"//hackvideo.herokuapp.com/assets/player.js\");\n"+
+          "document.getElementsByTagName(\"head\")[0].appendChild(player_el);\n"+
+        "}";
+      document.getElementsByTagName("head")[0].appendChild(player_el);
+
+
+    }
+
+    var timeout_counter = 0;
+    console.debug("FBHack extension 1");
+    function timeout(){
+      console.debug("FBHack extension timeout");
+      setTimeout(function() {
+        if(timeout_counter > 100) return;
+        timeout_counter++;
+        if(document.querySelectorAll(".stageWrapper embed").length !== 0){
+          replace_video();
             if(document.location.href.match(/cid=([0-9]+)/)){
-            var session_id = document.location.href.match(/cid=([0-9]+)/)[2];
+            console.log("Hello!");
+            console.log(document.location.href.match(/cid=([0-9]+)/)[0]);
+            var session_id = document.location.href.match(/cid=([0-9]+)/)[1];
+            console.log(session_id);
             var ready01 = false,
                 ready02 = false,
                 url = "http://hackvideo.herokuapp.com";
@@ -151,7 +182,7 @@
             function element(id) {
               return document.getElementById(id);
             }
-
+            console.log(document.location.href);
               var paused = true,
                   right = false,
                   from_ended = false;
@@ -192,8 +223,9 @@
                   url: url+'/keepalive',
                   headers: {"Content-Type" : "application/json"},
                   data: JSON.stringify({'c_id':session_id, 'user':get_id(), 'time':popcorn.currentTime()}),
-                    onload: function() {
-                    if (request.response['skip'] && !from_ended) {
+                    onload: function(response) {
+                    robj = JSON.parse(response.responseText);
+                    if (robj['skip'] && !from_ended) {
                       right = true;
                       popcorn.play();
                     } else {
@@ -205,33 +237,6 @@
               };
               keepAlive();
             };
-          }); }
-
-      var player_el = document.createElement('script');
-      player_el.setAttribute("type","text/javascript");
-      player_el.innerHTML =
-        "fbhack = {};\n"+
-        "fbhack.load_player_js = function(){\n"+
-          "console.debug('fbhack.load_player_js')\n"+
-          "var player_el = document.createElement('script');\n"+
-          "player_el.setAttribute(\"type\",\"text/javascript\");\n"+
-          "player_el.setAttribute(\"src\", \"//hackvideo.herokuapp.com/assets/player.js\");\n"+
-          "document.getElementsByTagName(\"head\")[0].appendChild(player_el);\n"+
-        "}";
-      document.getElementsByTagName("head")[0].appendChild(player_el);
-
-
-    }
-
-    var timeout_counter = 0;
-    console.debug("FBHack extension 1");
-    function timeout(){
-      console.debug("FBHack extension timeout");
-      setTimeout(function() {
-        if(timeout_counter > 100) return;
-        timeout_counter++;
-        if(document.querySelectorAll(".stageWrapper embed").length !== 0){
-          replace_video();
           return;
         }
         timeout();
