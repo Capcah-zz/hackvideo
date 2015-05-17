@@ -186,9 +186,7 @@
               var paused = true,
                   right = false,
                   from_ended = false;
-                  popcorn = Popcorn("#hackvideo");
-
-              popcorn = popcorn
+              var popcorn = Popcorn("#hackvideo")
                .on('timeupdate', function() {
                  console.log("timeupdate");
                })
@@ -218,6 +216,8 @@
                 })});
 
               function keepAlive() {
+                console.log(popcorn.currentTime());
+                console.log('keepalive!');
                 GM_xmlhttpRequest({
                   method: 'POST',
                   url: url+'/keepalive',
