@@ -91,3 +91,6 @@ post '/stop' do
   return {ok: ncon.empty?}.to_json
 end
 
+after do
+  response['Access-Control-Allow-Origin'] = "*"
+end
