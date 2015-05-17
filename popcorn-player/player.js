@@ -9,15 +9,17 @@ function element(id) {
 
 document.addEventListener('DOMContentLoaded', function() {
   var paused = true,
-      right = false;
+      right = false,
+      from_play = false;
+      c_id = 0,
+      user = 3;
       popcorn = Popcorn("#ourvideo");
 
   popcorn = popcorn
   .on('play', function() {
     var request = new XMLHttpRequest();
-    var data = new FormData();
 
-    request.open("POST", url, true);
+    request.open("POST", url+'/play', true);
 
     console.log(request.readyState + " & " + request.status);
 
@@ -44,29 +46,32 @@ document.addEventListener('DOMContentLoaded', function() {
       element('status').innerHTML = "An error occurred.\nConnection timed out.";
     }
 
-    data.append("c_id", c_id);
-    data.append("user", user);
-
-    request.send(data);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.send(JSON.stringify({'c_id':c_id,'user':user}));
 
     if (!right) {
+      from_play = true;
       popcorn.pause();
     }
-    else {
-      paused = false;
+    //else {
+    //  paused = false;
 
-      ready01 = false;
-      ready02 = false;
+    //  ready01 = false;
+    //  ready02 = false;
 
-      element('btn-play-pause').innerHTML = 'Pause 01';
-      element('btn-play-pause-02').innerHTML = 'Pause 02';
-    }
+    //  element('btn-play-pause').innerHTML = 'Pause 01';
+    //  element('btn-play-pause-02').innerHTML = 'Pause 02';
+    //}
   })
   .on('pause', function() {
+    if(from_play){
+        from_play = false;
+        return;
+    }
     var request = new XMLHttpRequest();
-    var data = new FormData();
+    //var data = new FormData();
 
-    request.open("POST", url, true);
+    request.open("POST", url+'/stop', true);
 
     console.log(request.readyState + " & " + request.status);
 
@@ -93,22 +98,26 @@ document.addEventListener('DOMContentLoaded', function() {
       element('status').innerHTML = "An error occurred.\nConnection timed out.";
     }
 
-    data.append("c_id", c_id);
-    data.append("user", user);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.send(JSON.stringify({'c_id':c_id,'user':user}));
 
-    request.send(data);
+    //data.append("c_id", c_id);
+    //data.append("user", user);
 
-    paused = true;
+    //request.send(data);
 
-    ready01 = false;
-    ready02 = false;
+    //paused = true;
 
-    element('btn-play-pause').innerHTML = 'Play 01';
-    element('btn-play-pause-02').innerHTML = 'Play 02';
-    console.log(popcorn.currentTime());
+    //ready01 = false;
+    //ready02 = false;
+
+    //element('btn-play-pause').innerHTML = 'Play 01';
+    //element('btn-play-pause-02').innerHTML = 'Play 02';
+    //console.log(popcorn.currentTime());
   });
 
   // Play-pause buttons
+  /*
   element('btn-play-pause').addEventListener('click', function() {
     ready01 = true;
 
@@ -134,23 +143,22 @@ document.addEventListener('DOMContentLoaded', function() {
       popcorn.pause();
     }
   }, false);
+  */
 
-  keepAlive = function() {
+  function keepAlive() {
     var request = new XMLHttpRequest();
-    
-    request.open("GET", url + "/keepAlive/" + c_id, true);
-
+    request.open("GET", url + "/keepalive/" + c_id, true);
     request.onload = function() {
       if (request.status == 200) {
         right = true;
-      }
-      else {
+        popcorn.play();
+      } else {
         right = false;
+        popcorn.pause();
       }
-      sleep(0.5);
-      keepAlive();
     }
-
     request.send();
+    setTimeout(keepAlive,500);
   };
+  keepAlive();
 }, false );
