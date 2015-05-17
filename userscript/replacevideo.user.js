@@ -19,6 +19,10 @@
 
   var userscript = 'FBHack';
   console.debug("FBHack extension");
+  
+  function get_id(){
+    document.querySelectorAll('[id^="profile_pic"]')[0].id.split('_').pop()
+  }
 
   try{
     if (window.top != window.self) return;
@@ -82,8 +86,17 @@
 
         document.querySelectorAll("#watch2")[0].addEventListener('click',
           function(){
-            console.log("hello!");
-          }
+            GM_xmlhttpRequest({
+              method: 'POST',
+              url: url+'/start',
+              headers: {"Content-Type" : "application/json"},
+                data: JSON.stringify({'users':[get_id()] ++ ,'video':hackvideo.video_src})
+                onload: function(response) {
+                  alert(response.responseText);
+                  session_id = response;
+            });
+            }
+          })}
         );
 
         console.debug("ul_friends");
