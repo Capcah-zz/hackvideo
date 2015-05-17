@@ -91,6 +91,12 @@ post '/stop' do
   return {ok: ncon.empty?}.to_json
 end
 
+options '/*' do
+  response.headers["Access-Control-Allow-Origin"] = "*"
+  response.headers["Access-Control-Allow-Methods"] = "POST, GET"
+  response.headers["Access-Control-Allow-Headers"] = "origin, content-type, accept"
+end
+
 after do
   response['Access-Control-Allow-Origin'] = "*"
 end
