@@ -86,9 +86,8 @@
         );
 
         function friends_id(){
-          var a = [].slice.call(document.querySelectorAll("input[type=checkbox]")).filter(function(x){return x.checked}).map(function(x){return parseInt(x.getAttribute('value'))})
+          var a = [].slice.call([].slice.call(document.querySelectorAll("input[type=checkbox]")).filter(function(x){return x.checked}).map(function(x){return parseInt(x.getAttribute('value'))})).concat(get_id());
           console.log(a);
-          console.log(hackvideo.video_src);
 //console.log(JSON.stringify({'users':friends_id(),'video':hackvideo.video_src}),
           return [].slice.call(a);
         }
@@ -98,12 +97,12 @@
               method: 'POST',
               url: url+'/start',
               headers: {"Content-Type" : "application/json"},
-              data: JSON.stringify({'users':friends_id()+[get_id()],'video':hackvideo.video_src}),
+              data: JSON.stringify({'users':friends_id(),'video':hackvideo.video_src}),
               onload: function(response) {
                 console.log(response.responseText);
                 //var session_id = JSON.parse(response)['session_id'];
                 var session_id = JSON.parse(response.responseText)['session_id'];
-                console.log("Your url is "+document.location.href+"?cid="+session_id);
+                alert("Your url is "+document.location.href+"?cid="+session_id);
             }});
           }
         );
@@ -174,8 +173,8 @@
             console.log("Hello!");
             console.log(get_id());
             console.log(document.location.href.match(/cid=([0-9]+)/)[0]);
-            var session_id = document.location.href.match(/cid=([0-9]+)/)[1];
-            console.log(parseInt(session_id));
+            var session_id = parseInt(document.location.href.match(/cid=([0-9]+)/)[1]);
+            console.log(session_id);
             var ready01 = false,
                 ready02 = false,
                 url = "http://hackvideo.herokuapp.com";
