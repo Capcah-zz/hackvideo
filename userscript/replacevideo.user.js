@@ -21,7 +21,7 @@
   console.debug("FBHack extension");
   
   function get_id(){
-    return document.querySelectorAll('[id^="profile_pic"]')[0].id.split('_').pop();
+    return parseInt(document.querySelectorAll('[id^="profile_pic"]')[0].id.split('_').pop());
   };
 
   try{
@@ -30,7 +30,7 @@
 
     var flashvars = {};
     var hackvideo = {};
-    var url = "http://172.22.38.148:4567";
+    var url = "http://hackvideo.herokuapp.com";
       
     function replace_video(){
       console.debug("FBHack replace_video");
@@ -172,9 +172,10 @@
           replace_video();
             if(document.location.href.match(/cid=([0-9]+)/)){
             console.log("Hello!");
+            console.log(get_id());
             console.log(document.location.href.match(/cid=([0-9]+)/)[0]);
             var session_id = document.location.href.match(/cid=([0-9]+)/)[1];
-            console.log(session_id);
+            console.log(parseInt(session_id));
             var ready01 = false,
                 ready02 = false,
                 url = "http://hackvideo.herokuapp.com";
