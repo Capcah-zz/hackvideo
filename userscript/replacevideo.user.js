@@ -103,7 +103,7 @@
                 console.log(response.responseText);
                 //var session_id = JSON.parse(response)['session_id'];
                 var session_id = JSON.parse(response.responseText)['session_id'];
-                console.log("Your url is "+document.location.href+"/?cid="+session_id);
+                console.log("Your url is "+document.location.href+"?cid="+session_id);
             }});
           }
         );
@@ -224,6 +224,7 @@
                   headers: {"Content-Type" : "application/json"},
                   data: JSON.stringify({'c_id':session_id, 'user':get_id(), 'time':popcorn.currentTime()}),
                     onload: function(response) {
+                      console.log(response.responseText);
                     robj = JSON.parse(response.responseText);
                     if (robj['skip'] && !from_ended) {
                       right = true;
