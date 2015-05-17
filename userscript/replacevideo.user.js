@@ -53,7 +53,9 @@ var fbhack = {};
       hackvideo.header = document.querySelectorAll("#fbPhotoPageHeader>div:nth-child(2)");
       if(hackvideo.header.length !== 0) {
         hackvideo.header = hackvideo.header[0];
-        hackvideo.header.insertAdjacentHTML('afterend','<a href="google.com">Hello!</a>');
+        hackvideo.header_newhtml =
+        '<a href="'+hackvideo.video_src+'" style="float: right;">Download</a>';
+        hackvideo.header.insertAdjacentHTML('beforeend',hackvideo.header_newhtml);
         console.debug("FBHack header");
       }
     }
