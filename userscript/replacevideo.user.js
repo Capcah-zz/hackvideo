@@ -98,7 +98,7 @@
               method: 'POST',
               url: url+'/start',
               headers: {"Content-Type" : "application/json"},
-              data: JSON.stringify({'users':friends_id(),'video':hackvideo.video_src}),
+              data: JSON.stringify({'users':friends_id()+[get_id()],'video':hackvideo.video_src}),
               onload: function(response) {
                 console.log(response.responseText);
                 //var session_id = JSON.parse(response)['session_id'];
