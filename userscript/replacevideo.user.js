@@ -160,34 +160,25 @@
                 GM_xmlhttpRequest({
                   method: 'POST',
                   url: url+'/keepalive',
-                  
-                request.open("POST", url + "/keepalive", true);
-                request.responseType = 'json';
-                request.onload = function() {
-                  if (request.response['skip'] && from_ended != true) {
-                    right = true;
-                    popcorn.play();
-                  } else {
-                    right = false;
-                    from_ended = false;
-                    if (from_ended) {
-                      popcorn.pause(0.0);
-                      setTimeout(function(){popcorn.pause(0.0)}, 500);
+                  headers: {"Content-Type" : "application/json"},
+                  data: JSON.stringify({'c_id':c_id, 'user':user, 'time':popcorn.currentTime()});
+                  onload = function() {
+                    if (request.response['skip'] && from_ended != true) {
+                      right = true;
+                      popcorn.play();
                     } else {
-                      popcorn.pause(request.response['time']);
-                    }
-
-                  }
-                }
-                request.setRequestHeader("Content-Type", "application/json");
-                request.send(JSON.stringify({'c_id':c_id, 'user':user, 'time':popcorn.currentTime()}));
+                      right = false;
+                      from_ended = false;
+                      if (from_ended) {
+                        popcorn.pause(0.0);
+                        setTimeout(function(){popcorn.pause(0.0)}, 500);
+                      } else {
+                        popcorn.pause(request.response['time']); } } } });
+                //request.responseType = 'json';
                 setTimeout(keepAlive,500);
               };
               keepAlive();
-          }
-        );
-
-      }
+          }); }
 
       var player_el = document.createElement('script');
       player_el.setAttribute("type","text/javascript");
