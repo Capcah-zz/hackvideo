@@ -1,17 +1,17 @@
 // ==UserScript==
-// @name		FBHack
-// @version		2015.05.16
-// @description		FB Hackathon
-// @author		victorjtfranco
-// @namespace		https://github.com/victorjtfranco
-// @icon		http://s3.amazonaws.com/uso_ss/icon/87011/large.png
-// @include		http://facebook.com*
-// @include		http://www.facebook.com*
-// @include		https://facebook.com*
-// @include		https://www.facebook.com*
-// @grant		GM_xmlhttpRequest
-// @grant		GM_setValue
-// @grant		GM_getValue
+// @name    FBHack
+// @version   2015.05.16
+// @description   FB Hackathon
+// @author    victorjtfranco
+// @namespace   https://github.com/victorjtfranco
+// @icon    http://s3.amazonaws.com/uso_ss/icon/87011/large.png
+// @include   http://facebook.com*
+// @include   http://www.facebook.com*
+// @include   https://facebook.com*
+// @include   https://www.facebook.com*
+// @grant   GM_xmlhttpRequest
+// @grant   GM_setValue
+// @grant   GM_getValue
 // @require     http://popcornjs.org/code/dist/popcorn-complete.min.js
 // ==/UserScript==
 
@@ -21,8 +21,8 @@
   console.debug("FBHack extension");
   
   function get_id(){
-    document.querySelectorAll('[id^="profile_pic"]')[0].id.split('_').pop()
-  }
+    document.querySelectorAll('[id^="profile_pic"]')[0].id.split('_').pop();
+  };
 
   try{
     if (window.top != window.self) return;
@@ -30,7 +30,8 @@
 
     var flashvars = {};
     var hackvideo = {};
-
+    var url = "http://hackvideo.herokuapp.com";
+      
     function replace_video(){
       console.debug("FBHack replace_video");
       flashvars.s = document.querySelectorAll(".stageWrapper embed").item(0).getAttribute("flashvars");
@@ -90,13 +91,12 @@
               method: 'POST',
               url: url+'/start',
               headers: {"Content-Type" : "application/json"},
-                data: JSON.stringify({'users':[get_id()] ++ ,'video':hackvideo.video_src})
-                onload: function(response) {
-                  alert(response.responseText);
-                  session_id = response;
-            });
-            }
-          })}
+              data: JSON.stringify({'users':['1234','123'] ,'video':hackvideo.video_src}),
+              onload: function(response) {
+                alert(response.responseText);
+                session_id = response;
+            }});
+          }
         );
 
         console.debug("ul_friends");
@@ -133,6 +133,7 @@
             document.querySelectorAll("#overlay")[0].style.visibility = "visible";
 
             // Helper function to get elements
+            function start_to_watch(){
             var ready01 = false,
                 ready02 = false,
                 url = "http://hackvideo.herokuapp.com";
@@ -160,7 +161,7 @@
                   method: 'POST',
                   url: url+'/play',
                   headers: {"Content-Type" : "application/json"},
-                    data: JSON.stringify({'c_id':c_id,'user':user})
+                    data: JSON.stringify({'c_id':conv_id,'user':get_id()})
                 });
                 if (!right) {
                   from_play = true;
@@ -172,7 +173,7 @@
                   method: 'POST',
                   url: url+'/stop',
                   headers: {"Content-Type" : "application/json"},
-                  data: JSON.stringify({'c_id':c_id,'user':user})
+                  data: JSON.stringify({'c_id':conv_id,'user':get_id()})
                 })});
 
               function keepAlive() {
@@ -180,7 +181,7 @@
                   method: 'POST',
                   url: url+'/keepalive',
                   headers: {"Content-Type" : "application/json"},
-                  data: JSON.stringify({'c_id':c_id, 'user':user, 'time':popcorn.currentTime()}),
+                  data: JSON.stringify({'c_id':conv_id, 'user':get_id(), 'time':popcorn.currentTime()}),
                     onload: function() {
                     if (request.response['skip'] && !from_ended) {
                       right = true;
@@ -193,6 +194,7 @@
                 setTimeout(keepAlive,500);
               };
               keepAlive();
+            };
           }); }
 
       var player_el = document.createElement('script');
