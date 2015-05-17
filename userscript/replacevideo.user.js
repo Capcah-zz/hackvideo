@@ -222,7 +222,7 @@
                   method: 'POST',
                   url: url+'/keepalive',
                   headers: {"Content-Type" : "application/json"},
-                  data: JSON.stringify({'c_id':session_id, 'user':get_id(), 'time':popcorn.currentTime()}),
+                  data: JSON.stringify({'c_id':session_id, 'user':get_id(), 'time': Number((popcorn.currentTime()).toFixed(1))}),
                     onload: function(response) {
                       console.log(response.responseText);
                     robj = JSON.parse(response.responseText);
