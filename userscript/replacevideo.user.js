@@ -92,8 +92,6 @@
                   right = false,
                   from_play = false;
                   from_ended = false;
-                  c_id = 0,
-                  user = 3;
                   popcorn = Popcorn("#hackvideo");
 
               popcorn = popcorn
@@ -185,27 +183,26 @@
 
               function keepAlive() {
                 var request = new XMLHttpRequest();
-                request.open("POST", url + "/keepalive/", true);
+                request.open("POST", url + "/keepalive", true);
+                request.responseType = 'json';
                 request.onload = function() {
-                  if (request.status == 200 && from_ended != true) {
+                  if (request.response['skip'] && from_ended != true) {
                     right = true;
                     popcorn.play();
                   } else {
                     right = false;
+                    from_ended = false;
                     if (from_ended) {
                       popcorn.pause(0.0);
-                    }
-                    else {
-                      popcorn.pause();
+                      setTimeout(function(){popcorn.pause(0.0)}, 500);
+                    } else {
+                      popcorn.pause(request.response['time']);
                     }
 
-                    from_ended = false;
-
-                    popcorn.pause();
                   }
                 }
                 request.setRequestHeader("Content-Type", "application/json");
-                request.send(JSON.stringify({'c_id':c_id,'user':user, 'time':popcorn.currentTime}));
+                request.send(JSON.stringify({'c_id':c_id, 'user':user, 'time':popcorn.currentTime()}));
                 setTimeout(keepAlive,500);
               };
               keepAlive();
