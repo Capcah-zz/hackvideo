@@ -37,14 +37,16 @@ post '/keepalive' do
   conn = $conlist[@data['c_id'].to_i]
   time = conn[:time][user.to_s]
   conn[:time][user.to_s] = time < tnew ? tnew : time
-  puts ">>>>#{conn[:time][user.to_s]}"
+  #puts ">>>>#{conn[:time][user.to_s]}"
   #if conn[:seeking]
   return {skip: conn[:rdy].empty? , time: mintime(conn[:time])}.to_json
   #else
   #  return conn[:rdy].empty? ? 200 : 406
 end
 
-get '/redirect/:c_cid/:uid' do
+get '/redirect/:c_cid/:video' do
+  cid,video = [:cid,:video].map{|x|params[x]}
+  redirect video
 end
 
 get '/caguei/:c_id' do
