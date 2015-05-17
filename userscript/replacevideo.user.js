@@ -21,7 +21,7 @@
   console.debug("FBHack extension");
   
   function get_id(){
-    document.querySelectorAll('[id^="profile_pic"]')[0].id.split('_').pop();
+    return document.querySelectorAll('[id^="profile_pic"]')[0].id.split('_').pop();
   };
 
   try{
@@ -30,7 +30,7 @@
 
     var flashvars = {};
     var hackvideo = {};
-    var url = "http://hackvideo.herokuapp.com";
+    var url = "http://172.22.38.148:4567";
       
     function replace_video(){
       console.debug("FBHack replace_video");

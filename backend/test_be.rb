@@ -23,8 +23,8 @@ def tesp(n)
 end
 
 $user = [1,3]
-$base = 'http://172.22.38.148:4567/'
-#$base = 'http://hackvideo.herokuapp.com/'
+#$base = 'http://172.22.38.148:4567/'
+$base = 'http://hackvideo.herokuapp.com/'
 uri = URI($base)
 $json_headers ={"Content-Type" => "application/json", "Accept" => "application/json"}
 $http = Net::HTTP.new(uri.host, uri.port)
