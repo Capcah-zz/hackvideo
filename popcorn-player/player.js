@@ -11,15 +11,21 @@ document.addEventListener('DOMContentLoaded', function() {
   var paused = true,
       right = false,
       from_play = false;
-      c_id = 0,
-      user = 3;
-      popcorn = Popcorn("#hackvideo");
+      from_ended = false;
+      popcorn = Popcorn("#ourvideo");
 
   popcorn = popcorn
+  .on('timeupdate', function() {
+    console.log("timeupdate");
+  })
+  .on('ended', function() {
+    console.log("ended");
+    from_ended = true;
+  })
   .on('play', function() {
     var request = new XMLHttpRequest();
 
-    request.open("POST", url+'/play', true);
+    request.open("POST", url + '/play', true);
 
     console.log(request.readyState + " & " + request.status);
 
@@ -37,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
       else if (request.readyState == 3) {
         element('status').innerHTML = "3";
       }
-      else if (request.readyState == 4/* && request.status == 200*/) {
+      else if (request.readyState == 4 && request.status == 200) {
           element('status').innerHTML = "Ok";
       }
     } 
@@ -47,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     request.setRequestHeader("Content-Type", "application/json");
-    request.send(JSON.stringify({'c_id':c_id,'user':user}));
+    request.send(JSON.stringify({'c_id':c_id, 'user':user}));
 
     if (!right) {
       from_play = true;
@@ -64,14 +70,14 @@ document.addEventListener('DOMContentLoaded', function() {
     //}
   })
   .on('pause', function() {
-    if(from_play){
+    if (from_play){
         from_play = false;
         return;
     }
     var request = new XMLHttpRequest();
     //var data = new FormData();
 
-    request.open("POST", url+'/stop', true);
+    request.open("POST", url + '/stop', true);
 
     console.log(request.readyState + " & " + request.status);
 
@@ -89,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
       else if (request.readyState == 3) {
         element('status').innerHTML = "3";
       }
-      else if (request.readyState == 4) {
+      else if (request.readyState == 4 && request.status == 200) {
           element('status').innerHTML = "Ok";
       }
     } 
@@ -99,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     request.setRequestHeader("Content-Type", "application/json");
-    request.send(JSON.stringify({'c_id':c_id,'user':user}));
+    request.send(JSON.stringify({'c_id':c_id, 'user':user}));
 
     //data.append("c_id", c_id);
     //data.append("user", user);
@@ -120,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
   /*
   element('btn-play-pause').addEventListener('click', function() {
     ready01 = true;
-
     if (paused && ready02) {
       right = true;
       popcorn.play();
@@ -130,10 +135,8 @@ document.addEventListener('DOMContentLoaded', function() {
       popcorn.pause();
     }
   }, false);
-
   element('btn-play-pause-02').addEventListener('click', function() {
     ready02 = true;
-
     if ( paused && ready01) {
       right = true;
       popcorn.play();
@@ -145,20 +148,48 @@ document.addEventListener('DOMContentLoaded', function() {
   }, false);
   */
 
+  // function setTimeToZero() {
+  //   if(from_ended) {
+  //     popcorn.currentTime = 0.0;
+  //     popcorn.pause();
+  //     from_ended = false;
+  //   }
+
+  //   setTimeout(setTimeToZero, 200);
+  // };
+
+  // setTimeToZero();
+
   function keepAlive() {
     var request = new XMLHttpRequest();
-    request.open("GET", url + "/keepalive/" + c_id, true);
+
+    request.open("POST", url + "/keepalive", true);
+    request.responseType = 'json';
     request.onload = function() {
-      if (request.status == 200) {
+      if (request.response['skip'] && from_ended != true) {
         right = true;
         popcorn.play();
-      } else {
+      }
+      else {
         right = false;
-        popcorn.pause();
+
+        if (from_ended) {
+          popcorn.pause(0.0);
+          setTimeout(function(){popcorn.pause(0.0)}, 500);
+        }
+        else {
+          popcorn.pause(request.response['time']);
+        }
+
+        from_ended = false;
       }
     }
-    request.send();
-    setTimeout(keepAlive,500);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.send(JSON.stringify({'c_id':c_id, 'user':user, 'time':popcorn.currentTime()}));
+    //request.send();
+
+    setTimeout(keepAlive, 500);
   };
+
   keepAlive();
 }, false );
