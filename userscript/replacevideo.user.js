@@ -118,7 +118,6 @@
 
               var paused = true,
                   right = false,
-                  from_play = false;
                   from_ended = false;
                   popcorn = Popcorn("#hackvideo");
 
@@ -145,10 +144,6 @@
                 }
               })
               .on('pause', function() {
-                if(from_play){
-                    from_play = false;
-                    return;
-                }
                 GM_xmlhttpRequest({
                   method: 'POST',
                   url: url+'/stop',
@@ -163,17 +158,13 @@
                   headers: {"Content-Type" : "application/json"},
                   data: JSON.stringify({'c_id':c_id, 'user':user, 'time':popcorn.currentTime()});
                   onload = function() {
-                    if (request.response['skip'] && from_ended != true) {
+                    if (request.response['skip'] && !from_ended) {
                       right = true;
                       popcorn.play();
                     } else {
                       right = false;
                       from_ended = false;
-                      if (from_ended) {
-                        popcorn.pause(0.0);
-                        setTimeout(function(){popcorn.pause(0.0)}, 500);
-                      } else {
-                        popcorn.pause(request.response['time']); } } } });
+                      popcorn.pause(request.response['time']);}}}});
                 //request.responseType = 'json';
                 setTimeout(keepAlive,500);
               };
