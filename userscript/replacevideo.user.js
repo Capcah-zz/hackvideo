@@ -67,11 +67,11 @@
             var ready01 = false,
                 ready02 = false,
                 url = "http://hackvideo.herokuapp.com";
-            
+
             function element(id) {
               return document.getElementById(id);
             }
-            
+
               var paused = true,
                   right = false,
                   from_play = false;
@@ -79,7 +79,7 @@
                   c_id = 0,
                   user = 3;
                   popcorn = Popcorn("#hackvideo");
-            
+
               popcorn = popcorn
                .on('timeupdate', function() {
                  console.log("timeupdate");
@@ -88,15 +88,15 @@
                  console.log("ended");
                  from_ended = true;
                })
-            
+
               .on('play', function() {
                 console.debug("play");
                 var request = new XMLHttpRequest();
-            
+
                 request.open("POST", url+'/play', true);
-            
+
                 console.log(request.readyState + " & " + request.status);
-            
+
                 request.onreadystatechange = function() {
                   console.log(request.readyState + " & " + request.status);
                   if (request.readyState == 0) {
@@ -115,14 +115,14 @@
                       element('status').innerHTML = "Ok";
                   }
                 }
-            
+
                 request.onerror = function() {
                   element('status').innerHTML = "An error occurred.\nConnection timed out.";
                 }
-            
+
                 request.setRequestHeader("Content-Type", "application/json");
                 request.send(JSON.stringify({'c_id':c_id,'user':user}));
-            
+
                 if (!right) {
                   from_play = true;
                   popcorn.pause();
@@ -134,11 +134,11 @@
                     return;
                 }
                 var request = new XMLHttpRequest();
-            
+
                 request.open("POST", url+'/stop', true);
-            
+
                 console.log(request.readyState + " & " + request.status);
-            
+
                 request.onreadystatechange = function() {
                   console.log(request.readyState + " & " + request.status);
                   if (request.readyState == 0) {
@@ -157,16 +157,16 @@
                       element('status').innerHTML = "Ok";
                   }
                 }
-            
+
                 request.onerror = function() {
                   element('status').innerHTML = "An error occurred.\nConnection timed out.";
                 }
-            
+
                 request.setRequestHeader("Content-Type", "application/json");
                 request.send(JSON.stringify({'c_id':c_id,'user':user}));
-            
+
               });
-            
+
               function keepAlive() {
                 var request = new XMLHttpRequest();
                 request.open("POST", url + "/keepalive/", true);
@@ -182,9 +182,9 @@
                     else {
                       popcorn.pause();
                     }
-            
+
                     from_ended = false;
-            
+
                     popcorn.pause();
                   }
                 }
