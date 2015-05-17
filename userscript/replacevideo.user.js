@@ -68,14 +68,37 @@
           '<div '+
             'style="width:600px; height: 400px; margin: 100px auto; background-color: #fff; border:1px solid #000; padding:15px; text-align:center;"'+
           '>'+
-          '<a onclick=\'document.getElementById("overlay")[0].visibility = \"hidden\" \'>close</a>'+
-          '<p>POPUP</p>'+
+          '<a onclick=\'document.getElementById(&quot;overlay&quot;).style.visibility = &quot;hidden&quot; \'>close</a>'+
+          '<div style="width: 90%; height: 300px; border:1px solid #000;">'+
+          '<ul>'+
+          '</ul>'+
+          '</div>'+
           '</div>'+
           '</div>'
         );
 
+        console.debug("ul_friends");
+        debugger;
+        ul_el = document.querySelectorAll("body #overlay ul")[0];
+        ul_friends = [].slice.call(document.querySelectorAll("div .fbChatSidebarBody li [data-id]"))
+                       .map(function(e){return e.getAttribute('data-id')});
+        ul_friends.forEach(function(e){
+          ul_el.insertAdjacentHTML('beforend','<li>'+e+'</li>')
+        });
+
+
         document.querySelectorAll("#sync_watch_button")[0].addEventListener('click',
           function(){
+
+            console.debug("ul_friends");
+            //debugger;
+            ul_el = document.querySelectorAll("body #overlay ul")[0];
+            ul_friends = [].slice.call(document.querySelectorAll("div .fbChatSidebarBody li [data-id]"))
+                           .map(function(e){return e.getAttribute('data-id')});
+            ul_friends.forEach(function(e){
+              ul_el.insertAdjacentHTML('beforeend','<li>'+e+'</li>')
+            });
+
             console.debug("#sync_watch_button click");
             document.querySelectorAll("#overlay")[0].style.visibility = "visible";
 
