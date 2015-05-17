@@ -133,38 +133,15 @@
 
               .on('play', function() {
                 console.debug("play");
-                var request = new XMLHttpRequest();
-
-                request.open("POST", url+'/play', true);
-
-                console.log(request.readyState + " & " + request.status);
-
-                request.onreadystatechange = function() {
-                  console.log(request.readyState + " & " + request.status);
-                  if (request.readyState == 0) {
-                    element('status').innerHTML = "0";
-                  }
-                  else if (request.readyState == 1) {
-                    element('status').innerHTML = "1";
-                  }
-                  else if (request.readyState == 2) {
-                    element('status').innerHTML = "2";
-                  }
-                  else if (request.readyState == 3) {
-                    element('status').innerHTML = "3";
-                  }
-                  else if (request.readyState == 4 && request.status == 200) {
-                      element('status').innerHTML = "Ok";
-                  }
-                }
-
-                request.onerror = function() {
-                  element('status').innerHTML = "An error occurred.\nConnection timed out.";
-                }
-
-                request.setRequestHeader("Content-Type", "application/json");
-                request.send(JSON.stringify({'c_id':c_id,'user':user}));
-
+                GM_xmlhttpRequest({
+                  method: 'POST',
+                  url: url+'/play',
+                  onerror = function() {
+                    element('status').innerHTML = "An error occurred.\nConnection timed out.";
+                  },
+                  headers: { "Content-Type" : "application/json" },
+                  data = JSON.stringify({'c_id':c_id,'user':user})
+                });
                 if (!right) {
                   from_play = true;
                   popcorn.pause();
