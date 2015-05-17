@@ -136,9 +136,6 @@
                 GM_xmlhttpRequest({
                   method: 'POST',
                   url: url+'/play',
-                  onerror = function() {
-                    element('status').innerHTML = "An error occurred.\nConnection timed out.";
-                  },
                   headers: {"Content-Type" : "application/json"},
                   data = JSON.stringify({'c_id':c_id,'user':user})
                 });
@@ -154,16 +151,16 @@
                 }
                 GM_xmlhttpRequest({
                   method: 'POST',
-                  url: url+'/strop',
-                  onerror = function() {
-                    element('status').innerHTML = "An error occurred.\nConnection timed out.";
-                  },
+                  url: url+'/stop',
                   headers: {"Content-Type" : "application/json"},
                   data: JSON.stringify({'c_id':c_id,'user':user});
-              });
+                });
 
               function keepAlive() {
-                var request = new XMLHttpRequest();
+                GM_xmlhttpRequest({
+                  method: 'POST',
+                  url: url+'/keepalive',
+                  
                 request.open("POST", url + "/keepalive", true);
                 request.responseType = 'json';
                 request.onload = function() {
