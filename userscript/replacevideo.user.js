@@ -141,14 +141,13 @@
                  console.log("ended");
                  from_ended = true;
                })
-
               .on('play', function() {
                 console.debug("play");
                 GM_xmlhttpRequest({
                   method: 'POST',
                   url: url+'/play',
                   headers: {"Content-Type" : "application/json"},
-                  data = JSON.stringify({'c_id':c_id,'user':user})
+                    data: JSON.stringify({'c_id':c_id,'user':user})
                 });
                 if (!right) {
                   from_play = true;
@@ -160,23 +159,23 @@
                   method: 'POST',
                   url: url+'/stop',
                   headers: {"Content-Type" : "application/json"},
-                  data: JSON.stringify({'c_id':c_id,'user':user});
-                });
+                  data: JSON.stringify({'c_id':c_id,'user':user})
+                })});
 
               function keepAlive() {
                 GM_xmlhttpRequest({
                   method: 'POST',
                   url: url+'/keepalive',
                   headers: {"Content-Type" : "application/json"},
-                  data: JSON.stringify({'c_id':c_id, 'user':user, 'time':popcorn.currentTime()});
-                  onload = function() {
+                  data: JSON.stringify({'c_id':c_id, 'user':user, 'time':popcorn.currentTime()}),
+                    onload: function() {
                     if (request.response['skip'] && !from_ended) {
                       right = true;
                       popcorn.play();
                     } else {
                       right = false;
                       from_ended = false;
-                      popcorn.pause(request.response['time']);}}}});
+                      popcorn.pause(request.response['time']);}}});
                 //request.responseType = 'json';
                 setTimeout(keepAlive,500);
               };
