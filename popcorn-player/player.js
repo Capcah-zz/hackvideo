@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
       from_play = false;
       c_id = 0,
       user = 3;
-      popcorn = Popcorn("#ourvideo");
+      popcorn = Popcorn("#hackvideo");
 
   popcorn = popcorn
   .on('play', function() {
