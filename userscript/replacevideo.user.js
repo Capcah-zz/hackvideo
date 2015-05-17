@@ -85,16 +85,25 @@
           '</div>'
         );
 
+        function friends_id(){
+          var a = [].slice.call(document.querySelectorAll("input[type=checkbox]")).filter(function(x){return x.checked}).map(function(x){return parseInt(x.getAttribute('value'))})
+          console.log(a);
+          console.log(hackvideo.video_src);
+//console.log(JSON.stringify({'users':friends_id(),'video':hackvideo.video_src}),
+          return [].slice.call(a);
+        }
         document.querySelectorAll("#watch2")[0].addEventListener('click',
           function(){
             GM_xmlhttpRequest({
               method: 'POST',
               url: url+'/start',
               headers: {"Content-Type" : "application/json"},
-              data: JSON.stringify({'users':['1234','123'] ,'video':hackvideo.video_src}),
+              data: JSON.stringify({'users':friends_id(),'video':hackvideo.video_src}),
               onload: function(response) {
-                alert(response.responseText);
-                session_id = response;
+                console.log(response.responseText);
+                //var session_id = JSON.parse(response)['session_id'];
+                var session_id = JSON.parse(response.responseText)['session_id'];
+                console.log("Your url is "+document.location.href+"/?cid="+session_id);
             }});
           }
         );
@@ -105,7 +114,7 @@
         ul_friends = [].slice.call(document.querySelectorAll("div .fbChatSidebarBody li [data-id]"))
                        .map(function(e){return e.getAttribute('data-id')});
         ul_friends.forEach(function(e){
-          ul_el.insertAdjacentHTML('beforend','<li>'+e+'</li>')
+          ul_el.insertAdjacentHTML('beforeend','<li>'+e+'</li>')
         });
 
 
@@ -133,7 +142,8 @@
             document.querySelectorAll("#overlay")[0].style.visibility = "visible";
 
             // Helper function to get elements
-            function start_to_watch(){
+            if(document.location.href.match(/cid=([0-9]+)/)){
+            var session_id = document.location.href.match(/cid=([0-9]+)/)[2];
             var ready01 = false,
                 ready02 = false,
                 url = "http://hackvideo.herokuapp.com";
@@ -161,7 +171,7 @@
                   method: 'POST',
                   url: url+'/play',
                   headers: {"Content-Type" : "application/json"},
-                    data: JSON.stringify({'c_id':conv_id,'user':get_id()})
+                    data: JSON.stringify({'c_id':session_id,'user':get_id()})
                 });
                 if (!right) {
                   from_play = true;
@@ -173,7 +183,7 @@
                   method: 'POST',
                   url: url+'/stop',
                   headers: {"Content-Type" : "application/json"},
-                  data: JSON.stringify({'c_id':conv_id,'user':get_id()})
+                  data: JSON.stringify({'c_id':session_id,'user':get_id()})
                 })});
 
               function keepAlive() {
@@ -181,7 +191,7 @@
                   method: 'POST',
                   url: url+'/keepalive',
                   headers: {"Content-Type" : "application/json"},
-                  data: JSON.stringify({'c_id':conv_id, 'user':get_id(), 'time':popcorn.currentTime()}),
+                  data: JSON.stringify({'c_id':session_id, 'user':get_id(), 'time':popcorn.currentTime()}),
                     onload: function() {
                     if (request.response['skip'] && !from_ended) {
                       right = true;
