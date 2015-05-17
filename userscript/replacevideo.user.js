@@ -61,8 +61,24 @@
         hackvideo.header.insertAdjacentHTML('beforeend',hackvideo.header_newhtml);
         console.debug("FBHack header");
 
+        document.querySelectorAll("body")[0].insertAdjacentHTML('beforeend',
+          '<div id="overlay"'+
+            'style="visibility: hidden; position: absolute; left: 0px; top: 0px; width:100%; height:100%; text-align:center; z-index: 1000;"'+
+          '>'+
+          '<div '+
+            'style="width:600px; height: 400px; margin: 100px auto; background-color: #fff; border:1px solid #000; padding:15px; text-align:center;"'+
+          '>'+
+          '<a onclick=\'document.getElementById("overlay")[0].visibility = \"hidden\" \'>close</a>'+
+          '<p>POPUP</p>'+
+          '</div>'+
+          '</div>'
+        );
+
         document.querySelectorAll("#sync_watch_button")[0].addEventListener('click',
           function(){
+            console.debug("#sync_watch_button click");
+            document.querySelectorAll("#overlay")[0].style.visibility = "visible";
+
             // Helper function to get elements
             var ready01 = false,
                 ready02 = false,
