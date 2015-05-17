@@ -25,9 +25,23 @@ get '/' do
   'Noone should see this'
 end
 
+def mintime(hash)
+  return hash.values.min
+end
+
 #This method checks if everyone is ok with stuff playing
-get '/keepalive/:c_id' do
-  return $conlist[params[:c_id].to_i][:rdy].empty? ? 200 : 406
+post '/keepalive' do
+  content_type :json
+  user = @data['user']
+  tnew = @data['time']
+  conn = $conlist[@data['c_id'].to_i]
+  time = conn[:time][user.to_s]
+  conn[:time][user.to_s] = time < tnew ? tnew : time
+  puts ">>>>#{conn[:time][user.to_s]}"
+  #if conn[:seeking]
+  return {skip: conn[:rdy].empty? , time: mintime(conn[:time])}.to_json
+  #else
+  #  return conn[:rdy].empty? ? 200 : 406
 end
 
 get '/redirect/:c_cid/:uid' do
@@ -54,10 +68,13 @@ post '/start' do
   content_type :json
   return json_error("empty data")  unless validate_json(@data)
   state = tuple(@data)
+  users = @data["users"]
   return json_error("duplicate video")  if $connections[state]
   num = ($conlist <<
          ($connections[state] =
-          {rdy: Set.new(@data["users"]), time: 0, state: state})).size
+          { rdy: Set.new(users),
+            time:Hash[users.zip([0]*users.size)],
+            state: state})).size
   return {session_id: num-1}.to_json
 end
 
@@ -89,6 +106,21 @@ post '/stop' do
   $conlist[id][:rdy].add(user.to_s)
   ncon = $conlist[id][:rdy]
   return {ok: ncon.empty?}.to_json
+end
+
+post '/seek' do
+  id,user,time = ["c_id",'user',"time"].map{|x| @data[x]}
+  puts $conlist.inspect
+  con = $conlist[id]
+  con[:time].each do |k,v|
+    con[:time][k] = time.to_i
+  end
+  con[:rdy] = Set.new(con[:time].keys.select{|x| x != user.to_s})
+end
+
+post '/seek-ack' do
+  id,user= ["c_id","user"].map{|x| @data[x]}
+  $conlist[id][:rdy].delete(user.to_s)
 end
 
 options '/*' do
