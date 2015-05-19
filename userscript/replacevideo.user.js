@@ -224,15 +224,15 @@
                   headers: {"Content-Type" : "application/json"},
                   data: JSON.stringify({'c_id':session_id, 'user':get_id(), 'time': Number((popcorn.currentTime()).toFixed(1))}),
                     onload: function(response) {
-                      console.log(response.responseText);
+                    console.log(response.responseText);
                     robj = JSON.parse(response.responseText);
-                    if (robj['skip'] && !from_ended) {
+                    if (robj.skip && !from_ended) {
                       right = true;
                       popcorn.play();
                     } else {
                       right = false;
                       from_ended = false;
-                      popcorn.pause(robj['time']);}}});
+                      popcorn.pause(robj.time);}}});
                 //request.responseType = 'json';
                 setTimeout(keepAlive,500);
               };
