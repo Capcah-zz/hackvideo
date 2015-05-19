@@ -200,7 +200,8 @@
                   method: 'POST',
                   url: url+'/play',
                   headers: {"Content-Type" : "application/json"},
-                    data: JSON.stringify({'c_id':session_id,'user':get_id()})
+                    data: JSON.stringify({'c_id':session_id,'user':get_id()}),
+                  onload: function(res) {console.log(res);}
                 });
                 if (!right) {
                   from_play = true;
@@ -227,9 +228,11 @@
                     console.log(response.responseText);
                     robj = JSON.parse(response.responseText);
                     if (robj.skip && !from_ended) {
+                      console.log('trying to play');
                       right = true;
                       popcorn.play();
                     } else {
+                      console.log(robj.skip);
                       right = false;
                       from_ended = false;
                       popcorn.pause(robj.time);}}});
