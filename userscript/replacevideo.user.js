@@ -177,6 +177,7 @@
             console.log(session_id);
             var ready01 = false,
                 ready02 = false,
+                from_keep = false,
                 url = "http://hackvideo.herokuapp.com";
 
             function element(id) {
@@ -209,6 +210,7 @@
                 }
               })
               .on('pause', function() {
+                if (from_keep) return;
                 GM_xmlhttpRequest({
                   method: 'POST',
                   url: url+'/stop',
@@ -230,9 +232,11 @@
                     if (robj.skip && !from_ended) {
                       console.log('trying to play');
                       right = true;
+                      from_keep = false;
                       popcorn.play();
                     } else {
                       console.log(robj.skip);
+                      from_keep = true;
                       right = false;
                       from_ended = false;
                       popcorn.pause(robj.time);}}});
