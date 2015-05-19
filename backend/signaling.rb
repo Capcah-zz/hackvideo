@@ -91,7 +91,7 @@ post '/play' do
   return json_error("video not registered") unless id && $conlist[id]
   $conlist[id][:rdy].delete(user)
   ncon = $conlist[id][:rdy]
-  return {ok: ncon.empty?}.to_json
+  return {ok: $conlist[id][:rdy].to_a}.to_json
 end
 
 #The user stopped the player
