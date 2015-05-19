@@ -34,7 +34,7 @@ post '/keepalive' do
   content_type :json
   user = @data['user']
   tnew = @data['time']
-  conn = $conlist[@data['c_id']]
+  conn = $conlist[@data['c_id'].to_i]
   time = conn[:time][user]
   puts ">>>>#{conn[:time][user]}"
   conn[:time][user] = time < tnew ? tnew : time
