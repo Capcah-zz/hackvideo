@@ -35,9 +35,9 @@ post '/keepalive' do
   user = @data['user']
   tnew = @data['time']
   conn = $conlist[@data['c_id'].to_i]
-  time = conn[:time][user.to_s]
+  time = conn[:time][user]
+  puts ">>>>#{conn[:time][user]}"
   conn[:time][user.to_s] = time < tnew ? tnew : time
-  puts ">>>>#{conn[:time][user.to_s]}"
   #if conn[:seeking]
   return {skip: conn[:rdy].empty? , time: mintime(conn[:time])}.to_json
   #else
@@ -69,6 +69,7 @@ post '/start' do
   return json_error("empty data")  unless validate_json(@data)
   state = tuple(@data)
   users = @data["users"]
+  puts ">>>>>>#{users.inspect}"
   return json_error("duplicate video")  if $connections[state]
   num = ($conlist <<
          ($connections[state] =

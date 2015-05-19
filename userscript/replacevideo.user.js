@@ -232,7 +232,7 @@
                     } else {
                       right = false;
                       from_ended = false;
-                      popcorn.pause(request.response['time']);}}});
+                      popcorn.pause(robj['time']);}}});
                 //request.responseType = 'json';
                 setTimeout(keepAlive,500);
               };
