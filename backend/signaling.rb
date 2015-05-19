@@ -37,7 +37,7 @@ post '/keepalive' do
   conn = $conlist[@data['c_id'].to_i]
   time = conn[:time][user]
   puts ">>>>#{conn[:time][user]}"
-  conn[:time][user.to_s] = time < tnew ? tnew : time
+  conn[:time][user] = time < tnew ? tnew : time
   #if conn[:seeking]
   return {skip: conn[:rdy].empty? , time: mintime(conn[:time])}.to_json
   #else
@@ -89,7 +89,7 @@ post '/play' do
   id,user = ["c_id","user"].map{|x| @data[x]}
   return json_error("missing user") unless user
   return json_error("video not registered") unless id && $conlist[id]
-  $conlist[id][:rdy].delete(user.to_s)
+  $conlist[id][:rdy].delete(user)
   ncon = $conlist[id][:rdy]
   return {ok: ncon.empty?}.to_json
 end
@@ -104,7 +104,7 @@ post '/stop' do
   id,user = ["c_id","user"].map{|x| @data[x]}
   return json_error("missing user") unless user
   return json_error("video not registered") unless id && $conlist[id]
-  $conlist[id][:rdy].add(user.to_s)
+  $conlist[id][:rdy].add(user)
   ncon = $conlist[id][:rdy]
   return {ok: ncon.empty?}.to_json
 end
@@ -116,12 +116,12 @@ post '/seek' do
   con[:time].each do |k,v|
     con[:time][k] = time.to_i
   end
-  con[:rdy] = Set.new(con[:time].keys.select{|x| x != user.to_s})
+  con[:rdy] = Set.new(con[:time].keys.select{|x| x != user})
 end
 
 post '/seek-ack' do
   id,user= ["c_id","user"].map{|x| @data[x]}
-  $conlist[id][:rdy].delete(user.to_s)
+  $conlist[id][:rdy].delete(user)
 end
 
 options '/*' do
